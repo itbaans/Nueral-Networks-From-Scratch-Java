@@ -1,3 +1,5 @@
+package Simple_NN;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,17 +9,17 @@ import java.util.List;
 public class App {
     public static void main(String[] args) throws Exception {
         // Increased learning rate
-        NueralNetwork network = new NueralNetwork(0.1);  
+        NueralNetwork network = new NueralNetwork(0.1);
         
-        double[][] input = readAndTransposeCSV("rescaled_dataset_train.csv", false);
-        double[][] target = readAndTransposeCSV("encoded_labels_train.csv", false);
+        double[][] input = readAndTransposeCSV("TheVanilla\\rescaled_dataset_train.csv", false);
+        double[][] target = readAndTransposeCSV("TheVanilla\\encoded_labels_train.csv", false);
 
 
         // Modified architecture
-        Layer inp = new Layer(784, true, false);
-        Layer hidden1 = new Layer(100, false, false);
+        Layer_NN inp = new Layer_NN(784, true, false);
+        Layer_NN hidden1 = new Layer_NN(100, false, false);
         //Layer hidden2 = new Layer(64, false, false);
-        Layer output = new Layer(10, false, true);
+        Layer_NN output = new Layer_NN(10, false, true);
 
         network.append(inp);
         network.append(hidden1);
@@ -47,7 +49,7 @@ public class App {
             }
         }
 
-        double[][] test = readAndTransposeCSV("rescaled_dataset_test.csv", false);
+        double[][] test = readAndTransposeCSV("TheVanilla\\rescaled_dataset_test.csv", false);
         
         double[][] entry = new double[784][1];
         for (int i = 0; i < 784; i++) {
@@ -62,7 +64,7 @@ public class App {
         //network.printLayerInfo("ff");
 
 
-        double[][] labels = readAndTransposeCSV("test.csv", false);
+        double[][] labels = readAndTransposeCSV("TheVanilla\\test.csv", false);
         for (int i = 0; i < labels.length; i++) {
             for (int j = 0; j < labels[0].length; j++) {
                 System.out.print(labels[i][j]+" ");

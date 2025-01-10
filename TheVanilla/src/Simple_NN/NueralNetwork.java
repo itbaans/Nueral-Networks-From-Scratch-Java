@@ -1,11 +1,13 @@
+package Simple_NN;
+
 import org.apache.commons.math4.legacy.linear.Array2DRowRealMatrix;
 import org.apache.commons.math4.legacy.linear.MatrixUtils;
 import org.apache.commons.math4.legacy.linear.RealMatrix;
 
 public class NueralNetwork {
     
-    Layer inputLayer;
-    Layer outputLayer;
+    Layer_NN inputLayer;
+    Layer_NN outputLayer;
     double learningRate;
 
     public NueralNetwork(double lr) {
@@ -16,12 +18,12 @@ public class NueralNetwork {
 
     public void setInputLayer(double [][] inp) {
 
-        Layer l = new Layer(inp[0].length, true, false);
+        Layer_NN l = new Layer_NN(inp[0].length, true, false);
         l.setInputs(inp);
 
         if(inputLayer == null) inputLayer = l;
         else {
-            Layer t = inputLayer.nextLayer;
+            Layer_NN t = inputLayer.nextLayer;
             l.weights = inputLayer.weights;
             inputLayer = l;
             l.nextLayer = t;
@@ -29,7 +31,7 @@ public class NueralNetwork {
         }
     } 
 
-    public void append(Layer l) {
+    public void append(Layer_NN l) {
 
         if(inputLayer == null) {
 
@@ -42,7 +44,7 @@ public class NueralNetwork {
 
         }
 
-        Layer currLayer = inputLayer;
+        Layer_NN currLayer = inputLayer;
 
         while(currLayer.nextLayer != null) {
 
@@ -50,14 +52,14 @@ public class NueralNetwork {
 
         }
 
-        currLayer.connect_next(l);
-        l.connect_prev(currLayer);
+        currLayer.connect_next((Layer)l);
+        l.connect_prev((Layer)currLayer);
         outputLayer = l;
 
     }
 
     public void checkLayerActivations() {
-        Layer curr = inputLayer;
+        Layer_NN curr = inputLayer;
         int layerNum = 0;
         while(curr != null) {
             double sum = 0;
@@ -116,7 +118,7 @@ public class NueralNetwork {
         //System.out.println("-------------------------");
     
         // Backpropagation
-        Layer curr = outputLayer;
+        Layer_NN curr = outputLayer;
         while(curr != inputLayer) {
             // Propagate errors backward
             curr.prevLayer.errors = curr.prevLayer.weights.transpose().multiply(curr.errors);
@@ -193,7 +195,7 @@ public class NueralNetwork {
 
     public void flowTheLayerss() {
 
-        Layer curr = inputLayer;
+        Layer_NN curr = inputLayer;
 
         while(curr != outputLayer) {
 
@@ -206,7 +208,7 @@ public class NueralNetwork {
 
     public void printLayerNodes() {
 
-        Layer curr = inputLayer;
+        Layer_NN curr = inputLayer;
 
         while(curr != null) {
 
@@ -221,7 +223,7 @@ public class NueralNetwork {
 
     public void printLayerInfo(String label) {
         System.out.println(label + ":");
-        Layer curr = inputLayer;
+        Layer_NN curr = inputLayer;
         int layerNum = 0;
         while(curr != null) {
             System.out.println("Layer " + layerNum + " values:");

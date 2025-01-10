@@ -1,19 +1,21 @@
+package Simple_NN;
+
 import org.apache.commons.math4.legacy.linear.MatrixUtils;
 import org.apache.commons.math4.legacy.linear.RealMatrix;
 import java.util.Random;
 
-public class Layer {
+public class Layer_NN implements Layer {
 
     RealMatrix nodes;
     RealMatrix weights;
     RealMatrix errors;
-    Layer nextLayer;
-    Layer prevLayer;
+    Layer_NN nextLayer;
+    Layer_NN prevLayer;
     boolean isInput;
     boolean isOutput;
     Random rand = new Random();
 
-    public Layer(int no_of_nodes, boolean in, boolean out) {
+    public Layer_NN(int no_of_nodes, boolean in, boolean out) {
 
         isInput = in;
         isOutput = out;
@@ -33,7 +35,7 @@ public class Layer {
 
         if(!isOutput) {
 
-            nextLayer = l;
+            nextLayer = (Layer_NN) l;
             weights = initializeRandomMatrix(nextLayer.nodes.getRowDimension(), nodes.getRowDimension(), true);
 
             evaluateNextNodes();
@@ -89,7 +91,7 @@ public class Layer {
     }
 
     public void connect_prev(Layer l) {
-        prevLayer = l;
+        prevLayer = (Layer_NN) l;
     }
 
     public RealMatrix initializeRandomMatrix(int row, int col, boolean useGaussian) {

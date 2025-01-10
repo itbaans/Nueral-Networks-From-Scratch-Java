@@ -1,3 +1,5 @@
+package Simple_NN;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
