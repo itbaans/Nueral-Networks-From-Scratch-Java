@@ -8,7 +8,7 @@ public class temp {
     }
 
     //channel -> NN
-    //channel -> c1 -> channel' -> c2 -> channel'' .... cn -> cahnneln - NN
+    //channel -> c1 -> channel' -> c2 -> channel'' .... cn -> cahnneln -> NN
 
     
 
