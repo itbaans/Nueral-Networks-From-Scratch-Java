@@ -46,6 +46,7 @@ public class Channel implements Layer {
 
         if(l instanceof Convolution) {
             next = (Convolution) l;
+            
             //TO DO STUFF
             return;
 
