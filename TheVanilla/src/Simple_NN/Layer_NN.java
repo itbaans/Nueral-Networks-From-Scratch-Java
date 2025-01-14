@@ -53,7 +53,7 @@ public class Layer_NN implements Layer {
             nextLayer.nodes = weights.multiply(nodes);
             for (int i = 0; i < nextLayer.nodes.getRowDimension(); i++) {
                 for (int j = 0; j < nextLayer.nodes.getColumnDimension(); j++) {
-                    nextLayer.nodes.setEntry(i, j, activation(nextLayer.nodes.getEntry(i, j)));
+                    nextLayer.nodes.setEntry(i, j, Activations.sigmoid(nextLayer.nodes.getEntry(i, j)));
                 }
                 
             }
@@ -61,13 +61,6 @@ public class Layer_NN implements Layer {
         }
 
     }
-
-    public double activation(double x) {
-
-        return 1 / (1 + Math.exp(-x));
-
-    }
-
     public void printNodesValues() {
 
         for (int i = 0; i < nodes.getRowDimension(); i++) {
