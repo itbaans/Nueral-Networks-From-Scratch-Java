@@ -16,6 +16,11 @@ public class Convolution implements Layer {
     int nKernels;
     int stride;
 
+    int poolSizeX;
+    int poolSizeY;
+    int poolSizeZ;
+    int poolStride;
+
     int VALID_PADDING = 0;
     int SAME_PADDING = 1;
     int FULL_PADDING = 2;
@@ -45,26 +50,58 @@ public class Convolution implements Layer {
     }
     
     //TO DO STUFF
-    public void pooling() {
+    public RealMatrix pooling(RealMatrix chnl) {
+        // Calculate output dimensions correctly
+        int outputHeight = (int)Math.floor((chnl.getRowDimension() - poolSizeY)/poolStride + 1);
+        int outputWidth = (int)Math.floor((chnl.getColumnDimension() - poolSizeX)/poolStride + 1);
         
-
+        RealMatrix res = MatrixUtils.createRealMatrix(outputHeight, outputWidth);
+        
+        // For each output position
+        for (int outRow = 0; outRow < outputHeight; outRow++) {
+            for (int outCol = 0; outCol < outputWidth; outCol++) {
+                // Find the max in the pooling window
+                double max = Double.NEGATIVE_INFINITY;
+                
+                // Starting position of current pooling window
+                int startRow = outRow * poolStride;
+                int startCol = outCol * poolStride;
+                
+                // Check each element in pooling window
+                for (int i = 0; i < poolSizeY; i++) {
+                    for (int j = 0; j < poolSizeX; j++) {
+                        if (startRow + i < chnl.getRowDimension() && startCol + j < chnl.getColumnDimension()) {
+                            double val = chnl.getEntry(startRow + i, startCol + j);
+                            if (val > max) {
+                                max = val;
+                            }
+                        }
+                    }
+                }
+                
+                res.setEntry(outRow, outCol, max);
+            }
+        }
+        
+        return res;
     }
 
     public void initKernels(RealMatrix[] chnls) {
 
         sizeZ = chnls.length;
 
-        double[][][] ks = new double[sizeX][sizeY][sizeZ];
-        kernels = new RealMatrix[sizeZ][nKernels];
+        double[][] ks = new double[sizeX][sizeY];
+        kernels = new RealMatrix[nKernels][sizeZ];
 
         for (int k = 0; k < nKernels; k++) {
             for (int i = 0; i < sizeZ; i++) {
+                ks = new double[sizeX][sizeY];  // Reset for each kernel
                 for (int j = 0; j < sizeX; j++) {
                     for (int j2 = 0; j2 < sizeY; j2++) {
-                        ks[i][j][j2] = (rand.nextDouble() * 4 - 2);
+                        ks[j][j2] = (rand.nextDouble() * 4 - 2);
                     }
                 }
-                kernels[k][i] = MatrixUtils.createRealMatrix(ks[i]);
+                kernels[k][i] = MatrixUtils.createRealMatrix(ks);
             }
         }
 
@@ -93,6 +130,7 @@ public class Convolution implements Layer {
         for (int k = 0; k < kernels.length; k++) {
             outChannels[k] = convo3d(inChnls, kernels[k], stride, ph, pw);
             outChannels[k] = activation(outChannels[k]);
+            outChannels[k] = pooling(outChannels[k]);
         }  
 
     }
@@ -176,8 +214,4 @@ public class Convolution implements Layer {
         return paddedMatrix;
     }
     
-
-
-
-
 }
