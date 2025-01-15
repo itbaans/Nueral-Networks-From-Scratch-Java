@@ -5,6 +5,7 @@ import java.util.Random;
 import org.apache.commons.math4.legacy.linear.MatrixUtils;
 import org.apache.commons.math4.legacy.linear.RealMatrix;
 
+import Simple_NN.Activations;
 import Simple_NN.Layer;
 
 public class Convolution implements Layer {
@@ -45,6 +46,7 @@ public class Convolution implements Layer {
     
     //TO DO STUFF
     public void pooling() {
+        
 
     }
 
@@ -90,10 +92,26 @@ public class Convolution implements Layer {
 
         for (int k = 0; k < kernels.length; k++) {
             outChannels[k] = convo3d(inChnls, kernels[k], stride, ph, pw);
+            outChannels[k] = activation(outChannels[k]);
+        }  
+
+    }
+
+    private RealMatrix activation(RealMatrix chnl) {
+
+        RealMatrix res = chnl.copy();
+
+        int r = chnl.getRowDimension();
+        int c = chnl.getColumnDimension();
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                double val = Activations.reLu(chnl.getEntry(i, j));
+                res.setEntry(i, j, val);
+            } 
         }
 
-        
-
+        return res;
     }
 
     private RealMatrix convo3d(RealMatrix[] channel, RealMatrix[] kernel, int stride, int padHeight, int padWidth) {
