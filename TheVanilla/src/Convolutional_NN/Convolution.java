@@ -36,6 +36,19 @@ public class Convolution implements Layer {
     Random rand = new Random();
 
     //TO DO CONSTRUCTER
+    public Convolution(int kernelSizeX, int kernelSizeY, int numberOfKernels, int strideSize, 
+                  int poolingSizeX, int poolingSizeY, int poolingStride, int paddingType) {
+        this.sizeX = kernelSizeX;
+        this.sizeY = kernelSizeY;
+        this.nKernels = numberOfKernels;
+        this.stride = strideSize;
+        
+        this.poolSizeX = poolingSizeX;
+        this.poolSizeY = poolingSizeY;
+        this.poolStride = poolingStride;
+        
+        this.padType = paddingType;
+    }
 
     @Override
     public void connect_prev(Layer l) {

@@ -18,10 +18,10 @@ public class Channel implements Layer {
     Layer next;
     Layer prev;
 
-    public Channel (int x, int y, int z, RealMatrix[] data) {
-        sizeX = x;
-        sizeY = y;
-        sizeZ = z;
+    public Channel (RealMatrix[] data) {
+        sizeX = data[0].getColumnDimension();
+        sizeY = data[0].getRowDimension();
+        sizeZ = data.length;
         channels = data;
     }
 
