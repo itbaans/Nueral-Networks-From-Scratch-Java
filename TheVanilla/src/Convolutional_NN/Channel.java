@@ -45,9 +45,8 @@ public class Channel implements Layer {
         }
 
         if(l instanceof Convolution) {
-            next = (Convolution) l;
-            
-            //TO DO STUFF
+            next = l;
+            ((Convolution)l).initKernels(channels);
             return;
 
         }
@@ -55,6 +54,5 @@ public class Channel implements Layer {
         System.out.println("INVALID CONNECTION");
 
     }
-    
 
 }
