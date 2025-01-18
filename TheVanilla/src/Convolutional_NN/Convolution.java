@@ -8,7 +8,7 @@ import org.apache.commons.math4.legacy.linear.RealMatrix;
 import Simple_NN.Activations;
 import Simple_NN.Layer;
 
-public class Convolution implements Layer {
+public class Convolution extends Layer {
 
     int sizeX;
     int sizeY;

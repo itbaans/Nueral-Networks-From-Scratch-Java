@@ -1,6 +1,8 @@
 package Simple_NN;
 
-public interface Layer {
-    public void connect_prev(Layer l);
-    public void connect_next(Layer l);
+public abstract class Layer {
+    public Layer next;
+    public Layer prev;
+    public abstract void connect_prev(Layer l);
+    public abstract void connect_next(Layer l);
 }

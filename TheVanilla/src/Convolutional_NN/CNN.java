@@ -1,6 +1,6 @@
 package Convolutional_NN;
 
-import Simple_NN.NueralNetwork;
+import Simple_NN.*;
 
 public class CNN {
     
@@ -20,13 +20,28 @@ public class CNN {
             inputChannel = ch;
             return;
         }
-
-        
-
     
     }
 
     public void convolve(Convolution conv) {
+
+        if(inputChannel == null) {
+            System.out.println("convo need input channel");
+            return;
+        }
+
+        Layer currLayer = inputChannel;
+
+        while((Channel)currLayer.next != null) {
+
+            currLayer = currLayer.next;
+
+        }
+
+        currLayer.connect_next(conv);
+        conv.connect_prev(currLayer);
+        outChannel = new Channel(conv.outChannels);
+        conv.connect_next(outChannel);
 
     }
 

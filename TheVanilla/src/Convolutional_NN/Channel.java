@@ -5,7 +5,7 @@ import org.apache.commons.math4.legacy.linear.RealMatrix;
 import Simple_NN.Layer;
 import Simple_NN.Layer_NN;
 
-public class Channel implements Layer {
+public class Channel extends Layer {
     
     int sizeX;
     int sizeY;

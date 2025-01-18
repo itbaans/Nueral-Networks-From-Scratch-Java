@@ -4,7 +4,7 @@ import org.apache.commons.math4.legacy.linear.MatrixUtils;
 import org.apache.commons.math4.legacy.linear.RealMatrix;
 import java.util.Random;
 
-public class Layer_NN implements Layer {
+public class Layer_NN extends Layer {
 
     RealMatrix nodes;
     RealMatrix weights;
