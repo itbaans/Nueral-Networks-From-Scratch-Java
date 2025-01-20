@@ -30,18 +30,25 @@ public class CNN {
             return;
         }
 
-        Layer currLayer = inputChannel;
 
-        while((Channel)currLayer.next != null) {
+        if(outChannel == null) {
+            inputChannel.connect_next(conv);
+            conv.connect_prev(inputChannel);
 
-            currLayer = currLayer.next;
+            outChannel = new Channel(conv.outChannels);
+            conv.connect_next(outChannel);
+            outChannel.connect_prev(conv);
 
+            return;
         }
 
-        currLayer.connect_next(conv);
-        conv.connect_prev(currLayer);
+        outChannel.connect_next(conv);
+        conv.connect_prev(outChannel);
+
         outChannel = new Channel(conv.outChannels);
         conv.connect_next(outChannel);
+        outChannel.connect_prev(conv);
+
 
     }
 
@@ -53,6 +60,9 @@ public class CNN {
     }
 
     public void flowTheNetwork() {
+
+        
+
 
     }
 
