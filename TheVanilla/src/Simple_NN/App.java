@@ -32,7 +32,7 @@ public class App {
             //if(epoch % 10 == 0) network.checkLayerActivations();
             for(int i = 0; i < input[0].length; i++) {
                 network.setInputLayer(getCol(input, i));
-                network.train(getCol(target, i));
+                network.train2(getCol(target, i));
             }
 
             if(epoch % 10 == 0) {

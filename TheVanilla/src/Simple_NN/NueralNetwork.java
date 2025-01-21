@@ -104,6 +104,41 @@ public class NueralNetwork {
         }
     }
 
+    public void train2(double[][] tars) {
+
+        RealMatrix targets = MatrixUtils.createRealMatrix(tars);
+    
+        // Forward pass
+        flowTheLayerss();  
+
+        //final layer error
+        RealMatrix mse_der = BackPropagationMaths.mse_der(outputLayer.nodes, targets);
+        RealMatrix sig_der = BackPropagationMaths.sigmoid_der(outputLayer.nodes);
+
+        outputLayer.errors = elementWiseMult(mse_der, sig_der);
+
+        // Backpropagation
+        Layer_NN curr = outputLayer;
+        while(curr != inputLayer) {
+            // Propagate errors backward
+            RealMatrix t1 = curr.prevLayer.weights.transpose().multiply(curr.errors);
+            RealMatrix t2 = BackPropagationMaths.sigmoid_der(curr.prevLayer.nodes);
+            curr.prevLayer.errors = elementWiseMult(t1, t2);
+            
+            // Calculate weight updates using the chain rule
+            RealMatrix gradients = curr.errors.multiply(curr.prevLayer.nodes.transpose());
+
+            // Update weights using gradient descent
+            curr.prevLayer.weights = curr.prevLayer.weights.add(
+                gradients.scalarMultiply(learningRate / curr.errors.getColumnDimension())
+            );
+
+            curr = curr.prevLayer;
+        }
+
+
+    }
+
     public void train(double[][] tars) {
         RealMatrix targets = MatrixUtils.createRealMatrix(tars);
     
@@ -112,10 +147,6 @@ public class NueralNetwork {
         
         // Calculate initial error at output layer
         outputLayer.errors = targets.subtract(outputLayer.nodes);
-
-        // Add activation checking before backprop
-        //checkLayerActivations();
-        //System.out.println("-------------------------");
     
         // Backpropagation
         Layer_NN curr = outputLayer;
@@ -127,9 +158,6 @@ public class NueralNetwork {
             RealMatrix a = elementWiseMult(curr.errors, curr.nodes);
             RealMatrix b = elementWiseMult(a, curr.nodes.scalarMultiply(-1).scalarAdd(1.0));
             RealMatrix gradients = b.multiply(curr.prevLayer.nodes.transpose());
-
-            // Gradient clipping
-            //RealMatrix clippedGradients = clipGradients(gradients, 3.0); // Clip gradients to [-3, 3]
 
             // Update weights using gradient descent
             curr.prevLayer.weights = curr.prevLayer.weights.add(

@@ -61,6 +61,7 @@ public class Layer_NN extends Layer {
         }
 
     }
+    
     public void printNodesValues() {
 
         for (int i = 0; i < nodes.getRowDimension(); i++) {
