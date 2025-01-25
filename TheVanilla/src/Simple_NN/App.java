@@ -27,7 +27,7 @@ public class App {
         network.append(output);
         
         System.out.println("Training Progress:");
-        int limit = 5;
+        int limit = 15;
         for(int epoch = 0; epoch < limit; epoch++) {
             //if(epoch % 10 == 0) network.checkLayerActivations();
             for(int i = 0; i < input[0].length; i++) {
