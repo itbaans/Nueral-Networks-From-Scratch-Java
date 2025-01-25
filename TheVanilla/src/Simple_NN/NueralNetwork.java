@@ -113,16 +113,17 @@ public class NueralNetwork {
 
         //final layer error
         RealMatrix mse_der = BackPropagationMaths.mse_der(outputLayer.nodes, targets);
-        RealMatrix sig_der = BackPropagationMaths.sigmoid_der(outputLayer.nodes);
+        RealMatrix act_der = BackPropagationMaths.get_derivative(outputLayer.act_type, outputLayer.nodes);
 
-        outputLayer.errors = elementWiseMult(mse_der, sig_der);
+        outputLayer.errors = elementWiseMult(mse_der, act_der);
 
         // Backpropagation
         Layer_NN curr = outputLayer;
+
         while(curr != inputLayer) {
             // Propagate errors backward
             RealMatrix t1 = curr.prevLayer.weights.transpose().multiply(curr.errors);
-            RealMatrix t2 = BackPropagationMaths.sigmoid_der(curr.prevLayer.nodes);
+            RealMatrix t2 = BackPropagationMaths.get_derivative(curr.prevLayer.act_type, curr.prevLayer.nodes);
             curr.prevLayer.errors = elementWiseMult(t1, t2);
             
             // Calculate weight updates using the chain rule
@@ -135,7 +136,6 @@ public class NueralNetwork {
 
             curr = curr.prevLayer;
         }
-
 
     }
 
@@ -217,7 +217,7 @@ public class NueralNetwork {
 
         inputLayer.setInputs(inps);
         flowTheLayerss();
-        outputLayer.printNodesValues();
+        //outputLayer.printNodesValues();
 
     }
 
