@@ -3,6 +3,15 @@ package Simple_NN;
 import org.apache.commons.math4.legacy.linear.RealMatrix;
 
 public class Activations {
+
+    int SIGMOID = 0;
+    int RELU = 1;
+    int TANH = 2;
+    int LEAKY_RELU = 3;
+
+    public static double tanh(double x) {
+        return Math.tanh(x);
+    }
     
     public static double sigmoid(double x) {
 
@@ -14,6 +23,28 @@ public class Activations {
         if (x <= 0) return 0;
         else {
             return x;
+        }
+    }
+
+    public static double leakyReLu(double x) {
+        if (x <= 0) return 0.01 * x;
+        else {
+            return x;
+        }
+    }
+
+    public static double get_activation(int act_type, double x) {
+        switch(act_type) {
+            case 0:
+                return sigmoid(x);
+            case 1:
+                return reLu(x);
+            case 2:
+                return tanh(x);
+            case 3:
+                return leakyReLu(x);
+            default:
+                return sigmoid(x);
         }
     }
 

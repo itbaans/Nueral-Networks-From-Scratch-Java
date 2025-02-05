@@ -15,8 +15,22 @@ public class Layer_NN extends Layer {
     boolean isOutput;
     Random rand = new Random();
 
+    int act_type;
+
+    public Layer_NN(int no_of_nodes, boolean in, boolean out, int act) {
+
+        isInput = in;
+        isOutput = out;
+        if(!isInput) act_type = act;
+
+        if(isInput) nodes = initializeRandomMatrix(no_of_nodes, 1, true);
+        else nodes = MatrixUtils.createRealMatrix(new double[no_of_nodes][1]);
+                
+    }
+
     public Layer_NN(int no_of_nodes, boolean in, boolean out) {
 
+        act_type = 0;
         isInput = in;
         isOutput = out;
         if(isInput) nodes = initializeRandomMatrix(no_of_nodes, 1, true);
@@ -53,7 +67,7 @@ public class Layer_NN extends Layer {
             nextLayer.nodes = weights.multiply(nodes);
             for (int i = 0; i < nextLayer.nodes.getRowDimension(); i++) {
                 for (int j = 0; j < nextLayer.nodes.getColumnDimension(); j++) {
-                    nextLayer.nodes.setEntry(i, j, Activations.sigmoid(nextLayer.nodes.getEntry(i, j)));
+                    nextLayer.nodes.setEntry(i, j, Activations.get_activation(nextLayer.act_type, nextLayer.nodes.getEntry(i, j)));
                 }
                 
             }

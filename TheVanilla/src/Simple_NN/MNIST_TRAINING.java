@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class App {
+public class MNIST_TRAINING {
     public static void main(String[] args) throws Exception {
         // Increased learning rate
         NueralNetwork network = new NueralNetwork(0.1);
@@ -56,11 +56,14 @@ public class App {
             entry[i][0] = test[i][0];
         }
         network.query(entry);
+        network.outputLayer.printNodesValues();
         for (int i = 0; i < 784; i++) {
             entry[i][0] = test[i][3];
         }
         System.out.println("______________");
         network.query(entry);
+        network.outputLayer.printNodesValues();
+        
         //network.printLayerInfo("ff");
 
 
