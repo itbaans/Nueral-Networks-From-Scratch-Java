@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digit Drawing Interface</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        #drawingCanvas {
+            border: 2px solid #333;
+            background: black;
+            cursor: crosshair;
+        }
+        #previewCanvas {
+            border: 1px solid #666;
+            background: black;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #prediction {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Draw a digit (0-9)</h2>
+        <canvas id="drawingCanvas" width="280" height="280"></canvas>
+        <div>Preview (28x28):</div>
+        <canvas id="previewCanvas" width="28" height="28"></canvas>
+        <div class="button-group">
+            <button onclick="clearCanvas()">Clear</button>
+            <button onclick="getPixelData()">Predict</button>
+        </div>
+        <div id="prediction"></div>
+    </div>
+
+    <script>
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const ctx = drawingCanvas.getContext('2d');
+        const previewCtx = previewCanvas.getContext('2d');
+        const prediction = document.getElementById('prediction');
+
+        // Set up drawing canvas
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 20;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Drawing event listeners
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getMousePos(drawingCanvas, e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const [currentX, currentY] = getMousePos(drawingCanvas, e);
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+
+            [lastX, lastY] = [currentX, currentY];
+            updatePreview();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            updatePreview();
+        }
+
+        function getMousePos(canvas, e) {
+            const rect = canvas.getBoundingClientRect();
+            return [
+                e.clientX - rect.left,
+                e.clientY - rect.top
+            ];
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            previewCtx.fillStyle = 'black';
+            previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+            prediction.textContent = '';
+        }
+
+        function updatePreview() {
+            // Draw the scaled down version
+            previewCtx.fillStyle = 'black';
+            previewCtx.fillRect(0, 0, 28, 28);
+            previewCtx.drawImage(drawingCanvas, 0, 0, 28, 28);
+        }
+
+        function getPixelData() {
+            const imageData = previewCtx.getImageData(0, 0, 28, 28);
+            const pixels = imageData.data;
+            const scaledPixels = [];
+            
+            // Convert to grayscale and scale to 0.01-0.99
+            for (let i = 0; i < pixels.length; i += 4) {
+                // Take red channel only since it's grayscale
+                const value = pixels[i];
+                // Scale from 0-255 to 0.01-0.99
+                const scaled = 0.01 + (value / 255) * 0.98;
+                scaledPixels.push(scaled);
+            }
+
+            // Send to Java backend
+            sendToJava(scaledPixels);
+            
+            // For debugging: show the values
+            console.log(scaledPixels);
+        }
+
+        function sendToJava(pixelData) {
+            // This is where you'll implement the connection to your Java backend
+            // Example using fetch:
+            fetch('http://localhost:8000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ pixels: pixelData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                prediction.textContent = `Predicted Digit: ${data.prediction}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                prediction.textContent = 'Error getting prediction';
+            });
+        }
+
+        // Initialize with black background
+        clearCanvas();
+    </script>
+</body>
+</html>

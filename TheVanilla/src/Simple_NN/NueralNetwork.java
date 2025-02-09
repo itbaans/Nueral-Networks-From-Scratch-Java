@@ -285,6 +285,25 @@ public class NueralNetwork {
         return vals;
     }
 
+    public double getCurrentOutput_maxVal() {
+        
+        int r = outputLayer.nodes.getRowDimension();
+        int c = outputLayer.nodes.getColumnDimension();
+        double[][] vals = new double[r][c];
+
+        double maxVal = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                vals[i][j] = outputLayer.nodes.getEntry(i, j);
+                if (vals[i][j] > maxVal) {
+                    maxVal = vals[i][j];
+                }
+            }
+        }
+        
+        return maxVal;
+    }
+
 }
 
 
